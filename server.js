@@ -14,6 +14,7 @@ const notes = [];
 // Routes
 // _______________________________________
 
+// Root route
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });
@@ -22,10 +23,10 @@ app.get('/notes', function(req, res) {
     res.sendFile(path.join(__dirname, 'public/notes.html'));
 });
 
-// API routes
+// get Notes array from "database"
 app.get('/api/notes', function(req, res) {
 
-    fs.readFile('db/db.json', 'utf8', function(error, data) {
+    fs.readFile('db/db.json', 'utf8', (error, data) => {
         if (error) {
             console.log(error);
         }
@@ -35,12 +36,13 @@ app.get('/api/notes', function(req, res) {
    
 });
 
+// Save a new Note
 app.post('/api/notes', function(req, res) {
     const newNote = req.body;
     req.body.id = Math.floor(Math.random() * 10000) + 1;
     notes.push(newNote);
     // console.log(notes);
-    fs.writeFile('db/db.json', JSON.stringify(notes, null, 2), function(err) {
+    fs.writeFile('db/db.json', JSON.stringify(notes, null, 2), err => {
         if(err) {
             console.log(err);
         }
@@ -48,21 +50,21 @@ app.post('/api/notes', function(req, res) {
    res.json(newNote);
 });
 
+// delete a Note when button is clicked
 app.delete('/api/notes/:id', function(req, res) {
     const id = parseInt(req.params.id);
 
-    const filteredNotes = notes.filter(function(note) {
-        return note.id !== id;
-    })
+    const filteredNotes = notes.filter(note => note.id !== id)
     res.json(filteredNotes);
 
-    fs.writeFile('db/db.json', JSON.stringify(filteredNotes, null, 2), function(err) {
+    fs.writeFile('db/db.json', JSON.stringify(filteredNotes, null, 2), err => {
         if(err) {
             console.log(err);
         }
     })
 });
 
+// Server listening
 app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
-  });
+    console.log('App listening on PORT ' + PORT);
+});
