@@ -51,27 +51,16 @@ app.post('/api/notes', function(req, res) {
 app.delete('/api/notes/:id', function(req, res) {
     const id = parseInt(req.params.id);
 
-    fs.readFile('db/db.json', 'utf8', function(error, data) {
-        if (error) {
-            console.log(error);
-        }
-        
-        const notes = JSON.parse(data)
-        const filteredNotes = notes.filter(function(note) {
-            return note.id !== id;
-        })
-
-        console.log(filteredNotes);
-        res.json(filteredNotes);
+    const filteredNotes = notes.filter(function(note) {
+        return note.id !== id;
     })
+    res.json(filteredNotes);
 
-//     fs.writeFile('db/db.json', JSON.stringify(filteredNotes, null, 2), function(err) {
-//         if(err) {
-//             console.log(err);
-//         }
-//     })
-//    res.json(filteredNotes);
-  
+    fs.writeFile('db/db.json', JSON.stringify(filteredNotes, null, 2), function(err) {
+        if(err) {
+            console.log(err);
+        }
+    })
 });
 
 app.listen(PORT, function() {
